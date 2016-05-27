@@ -1,6 +1,7 @@
 window.carbon = window.carbon || {};
 
 (function($) {
+
 	var carbon = window.carbon;
 
 	if (typeof carbon.fields === 'undefined') {
@@ -8,6 +9,11 @@ window.carbon = window.carbon || {};
 	}
 
 	carbon.fields.Model.Number = carbon.fields.Model.extend({
+		
+		initialize: function() {
+			carbon.fields.Model.prototype.initialize.apply(this);
+		},
+
 		/*
 		 * The validate method is an internal Backbone method.
 		 * It will check if the field model data is valid.
@@ -27,17 +33,17 @@ window.carbon = window.carbon || {};
 	});
 
 	carbon.fields.View.Number = carbon.fields.View.extend({
+		initialize: function() {
+			carbon.fields.View.prototype.initialize.apply(this);
+
+			this.on('field:rendered', this.initNumberField);
+		},
+
 		// Add the events from the parent view and also include new ones
 		events: function() {
 			return _.extend({}, carbon.fields.View.prototype.events, {
 				'blur input[type="number"]': 'checkValue',
 			});
-		},
-
-		initialize: function() {
-			carbon.fields.View.prototype.initialize.apply(this);
-
-			this.on('field:rendered', this.initNumberField);
 		},
 
 		initNumberField: function() {

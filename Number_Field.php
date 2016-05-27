@@ -1,12 +1,11 @@
 <?php
 
-class Carbon_Field_Number extends Carbon_Field {
-	/**
-	 * template()
-	 *
-	 * Prints the main Underscore template
-	 **/
-	
+namespace Carbon_Fields\Field;
+
+class Number_Field extends Field {
+	/*
+	 * Properties
+	 */
 	protected $default_min = 1;
 	protected $default_max = 2147483647;
 	protected $default_truncate = 0;
@@ -16,12 +15,6 @@ class Carbon_Field_Number extends Carbon_Field {
 	protected $max = 2147483647;
 	protected $truncate = 0;
 	protected $step = 1;
-
-	function template() {
-		?>
-		<input id="{{{ id }}}" type="number" name="{{{ name }}}" value="{{ value }}" class="regular-text" />
-		<?php
-	}
 
 	function to_json($load) {
 		$field_data = parent::to_json($load);
@@ -34,6 +27,34 @@ class Carbon_Field_Number extends Carbon_Field {
 		));
 
 		return $field_data;
+	}
+	
+	/**
+	 * template()
+	 *
+	 * Prints the main Underscore template
+	 **/
+	function template() {
+		?>
+		<input id="{{{ id }}}" type="number" name="{{{ name }}}" value="{{ value }}" class="regular-text" />
+		<?php
+	}
+
+	/**
+	 * admin_enqueue_scripts()
+	 * 
+	 * This method is called in the admin_enqueue_scripts action. It is called once per field type.
+	 * Use this method to enqueue CSS + JavaScript files.
+	 * 
+	 */
+	function admin_enqueue_scripts() {
+		$dir = plugin_dir_url( __FILE__ );
+
+		# Enqueue JS
+		wp_enqueue_script( 'carbon-field-number', $dir . 'js/field.js', array( 'carbon-fields' ) );
+		
+		# Enqueue CSS
+		wp_enqueue_style( 'carbon-field-number', $dir . 'css/field.css' );
 	}
 
 	function save() {
@@ -59,16 +80,6 @@ class Carbon_Field_Number extends Carbon_Field {
 		$this->set_value($field_value);
 
 		parent::save();
-	}
-
-	function admin_enqueue_scripts() {
-		$template_dir = get_template_directory_uri();
-
-		# Enqueue JS
-		crb_enqueue_script('carbon-field-Number', $template_dir . '/includes/carbon-field-number/js/field.js', array('carbon-fields'));
-		
-		# Enqueue CSS
-		crb_enqueue_style('carbon-field-Number', $template_dir . '/includes/carbon-field-number/css/field.css');
 	}
 
 	function set_max($max) {
